@@ -17,6 +17,7 @@ namespace UllrStudio._Scripts.Player
         [SerializeField] private float _moveSpeed = 0;
         [SerializeField] private float _jumpHeight = 0;
         [SerializeField] private float _gravity = 0;
+        [SerializeField] private int _collectible = 0;
 
         private bool _jumping = false;
         private bool _onLedge = false;
@@ -166,6 +167,10 @@ namespace UllrStudio._Scripts.Player
             _canMove = false;
         }
 
-
+        public void PickUpCollectible()
+        {
+            _collectible++;
+            Debug.Log("Soo, am I here?");
+        }
     }
 }
