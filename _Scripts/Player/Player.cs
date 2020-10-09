@@ -169,8 +169,7 @@ namespace UllrStudio._Scripts.Player
 
         public void PickUpCollectible()
         {
-            _collectible++;
-            Debug.Log("Soo, am I here?");
+            _collectible += 1;
         }
     }
 }
