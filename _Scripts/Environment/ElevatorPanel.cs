@@ -23,14 +23,17 @@ namespace UllrStudio._Scripts.Environment
             if (!other.CompareTag("Player")) return;
             if (!Input.GetKeyDown(KeyCode.E)) return;
             var playerAnimations = other.GetComponentInChildren<PlayerAnimations>();
+            var player = other.GetComponent<Player.Player>();
             playerAnimations.ActivateElevator();
-            StartCoroutine(LetAnimationPlay());
+            player.CannotMove();
+            StartCoroutine(LetAnimationPlay(player));
         }
-
-        private IEnumerator LetAnimationPlay()
+        
+        private IEnumerator LetAnimationPlay(Player.Player player)
         {
             yield return new WaitForSeconds(6f);
             StartCoroutine(SpinningLightRoutine());
+            player.CanMove();
             _elevator.CallElevator();
         }
         

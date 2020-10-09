@@ -20,7 +20,9 @@ namespace UllrStudio._Scripts.Player
 
         private bool _jumping = false;
         private bool _onLedge = false;
-        [SerializeField] private bool _rolling = false;
+        private bool _rolling = false;
+        private bool _flipAllowed = true;
+        private bool _canMove = true;
 
         private void Start()
         {
@@ -58,7 +60,7 @@ namespace UllrStudio._Scripts.Player
                 }
 
                 // Flip the character
-                if (horizontal != 0)
+                if (horizontal != 0 && _flipAllowed)
                 {
                     var facing = transform.localEulerAngles;
                     facing.y = _direction.z > 0 ? 0 : 180;
@@ -94,11 +96,13 @@ namespace UllrStudio._Scripts.Player
             }
 
             _velocity.y = _yVelocity;
-            _controller.Move(_velocity * Time.deltaTime);
+            if(_canMove)
+                _controller.Move(_velocity * Time.deltaTime);
         }
         
         public void GrabLedge(Vector3 handPos, LedgeChecker currentLedge)
         {
+            _canMove = false;
             _controller.enabled = false;
             _onLedge = true;
             _playerAnim.LedgeHanging(true);
@@ -113,6 +117,7 @@ namespace UllrStudio._Scripts.Player
             transform.position = _activeLedge.GetStandPos();
             _playerAnim.LedgeHanging(false);
             _controller.enabled = true;
+            _canMove = true;
         }
 
         public void ClimbLadder(Transform pos, Transform standPos)
@@ -127,6 +132,7 @@ namespace UllrStudio._Scripts.Player
             while (distance > 7f)
             {
                 _controller.enabled = false;
+                _canMove = false;
                 _playerAnim.ClimbLadder(true);
                 transform.position = Vector3.MoveTowards(transform.position, pos.position, 2 * Time.deltaTime);
                 distance = Vector3.Distance(transform.position, pos.position);
@@ -136,6 +142,7 @@ namespace UllrStudio._Scripts.Player
             Ladder();
             // yield return new WaitForSeconds(2f);
             _controller.enabled = true;
+            _canMove = true;
             transform.position = stand.position;
         }
 
@@ -143,6 +150,20 @@ namespace UllrStudio._Scripts.Player
         {
             _playerAnim.ClimbUpTrigger();
 
+        }
+        
+        public void CanMove()
+        {
+            _controller.enabled = true;
+            _flipAllowed = true;
+            _canMove = true;
+        }
+
+        public void CannotMove()
+        {
+            _controller.enabled = false;
+            _flipAllowed = false;
+            _canMove = false;
         }
 
 
